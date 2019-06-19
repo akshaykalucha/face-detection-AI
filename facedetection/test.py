@@ -4,6 +4,9 @@ import pickle
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_cascade = cv2.CascadeClassifier("D:\\coding projects\\face_detection\\data\\haarcascade_frontalface_alt2.xml")
+eye_cascade = cv2.CascadeClassifier("D:\\coding projects\\face_detection\\data\\haarcascade_eye.xml")
+smile_cascade = cv2.CascadeClassifier("D:\\coding projects\\face_detection\\data\\haarcascade_smile.xml")
+
 recognizer.read("trainner.yml")
 
 labels = {"persons_name": 1}
@@ -25,7 +28,7 @@ while (True):
 
 
         id_, conf = recognizer.predict(roi_gray)
-        if conf >= 45: #and conf <= 85:
+        if conf >= 45 and conf <= 85:
             print(id_)
             print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -41,6 +44,9 @@ while (True):
         end_chord_x = x + w
         end_chord_y = y + h
         cv2.rectangle(frame, (x, y), (end_chord_x, end_chord_y), color, stroke)
+        subitems = smile_cascade.detectMultiScale(roi_gray)
+        for (ex,ey,ew,eh) in subitems:
+            cv2.rectangle(roi_color, (ex,ey), (ex+ew,ey+eh), (0,255,0), 2)
 
     cv2.imshow('frame', frame)
     if cv2.waitKey(20) & 0XFF == ord('q'):
